@@ -1,6 +1,7 @@
 package com.gabyquiles.sunshine;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,8 +13,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,6 +38,7 @@ import java.util.List;
  */
 public class ForecastFragment extends Fragment {
     protected ArrayAdapter<String> adapter;
+    protected Toast toast;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,7 +84,19 @@ public class ForecastFragment extends Fragment {
         ListView list = (ListView) rootView.findViewById(R.id.listview_forecast);
 
         list.setAdapter(adapter);
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(toast != null) {
+                    toast.cancel();
+                }
+                Context context = getActivity();
+                String selected_item = adapter.getItem(position);
 
+                toast = Toast.makeText(context, selected_item, Toast.LENGTH_LONG);
+                toast.show();
+            }
+        });
 
         return rootView;
     }
