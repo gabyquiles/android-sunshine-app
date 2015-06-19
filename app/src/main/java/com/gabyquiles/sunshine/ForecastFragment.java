@@ -1,11 +1,14 @@
 package com.gabyquiles.sunshine;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +40,7 @@ import java.util.List;
  * A placeholder fragment containing a simple view.
  */
 public class ForecastFragment extends Fragment {
+    private final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
     protected ArrayAdapter<String> adapter;
 
     @Override
@@ -55,26 +59,31 @@ public class ForecastFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-            FetchWeatherTask task = new FetchWeatherTask();
-            task.execute("33701");
+            updateWeather();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        updateWeather();
+    }
+
+    private void updateWeather() {
+        Activity parent = getActivity();
+        FetchWeatherTask task = new FetchWeatherTask();
+        //Remeber that this preferences are the DEFAULT
+        SharedPreferences postalCode = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String zip = postalCode.getString(parent.getString(R.string.pref_location_key), parent.getString(R.string.pref_location_default));
+        task.execute(zip);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        String[] forecastArray = {
-                "Today - Sunny - 85/76",
-                "Tomorrow - Thunderstorms - 89/76",
-                "Mon - Thunderstorms - 91/77",
-                "Tue - Thunderstorms - 89/78",
-                "Wed - Cloudy - 87/79",
-                "Thu - Cloudy - 89/79",
-                "Fri - Cloudy - 91/78"
-        };
-        List<String> week_forecast = new ArrayList<String>(Arrays.asList(forecastArray));
+        List<String> week_forecast = new ArrayList<String>();
 
         adapter = new ArrayAdapter<String>(getActivity(),
                 R.layout.list_item_forecast, R.id.list_item_forecast_textview, week_forecast);
@@ -207,10 +216,19 @@ public class ForecastFragment extends Fragment {
          * Prepare the weather high/lows for presentation.
          */
         private String formatHighLows(double high, double low) {
+            //Get the units to format values
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String unitsType = sharedPreferences.getString(getString(R.string.pref_units_key), getString(R.string.pref_units_default));
+
+            if(unitsType.equals(getString(R.string.pref_units_imperial_value))) {
+                high = (high * 1.8) + 32;
+                low = (low * 1.8) + 32;
+            }
+
+
             // For presentation, assume the user doesn't care about tenths of a degree.
             long roundedHigh = Math.round(high);
             long roundedLow = Math.round(low);
-
             String highLowStr = roundedHigh + "/" + roundedLow;
             return highLowStr;
         }
