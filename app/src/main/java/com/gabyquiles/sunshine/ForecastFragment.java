@@ -40,7 +40,7 @@ import java.util.List;
  * A placeholder fragment containing a simple view.
  */
 public class ForecastFragment extends Fragment {
-    private final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
+    private final String LOG_TAG = ForecastFragment.class.getSimpleName();
     protected ArrayAdapter<String> adapter;
 
     @Override

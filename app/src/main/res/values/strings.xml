@@ -26,4 +26,6 @@
     <string name="pref_units_metric_value">metric</string>
     <string name="pref_units_imperial_value">imperial</string>
 
+    <string name="share_title">Share</string>
+
 </resources>
