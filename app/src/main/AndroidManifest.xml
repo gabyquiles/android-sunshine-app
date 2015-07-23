@@ -9,6 +9,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >
@@ -34,6 +35,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.gabyquiles.sunshine.MainActivity" />
         </activity>
+
+        <provider
+            android:authorities="com.gabyquiles.sunshine"
+            android:name=".data.WeatherProvider" />
     </application>
 
 </manifest>

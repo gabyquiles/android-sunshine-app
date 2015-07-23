@@ -67,31 +67,4 @@ public class MainActivity extends Activity {
             Log.w(LOG_TAG, "No activity found to receive the intent.");
         }
     }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.v(LOG_TAG, "OnStart");
-    }
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.v(LOG_TAG, "OnResume");
-    }
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.v(LOG_TAG, "OnPause");
-    }
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.v(LOG_TAG, "OnStop");
-    }
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.v(LOG_TAG, "OnDestroy");
-    }
-
 }
