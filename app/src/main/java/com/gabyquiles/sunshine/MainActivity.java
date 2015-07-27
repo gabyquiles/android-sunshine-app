@@ -2,23 +2,36 @@ package com.gabyquiles.sunshine;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 public class MainActivity extends Activity {
     private final String LOG_TAG = MainActivity.class.getSimpleName();
-    public final static String FORECAST_DATA = "com.gabyquiles.sunshine.FORECAST_DATA";
+    private final static String FORECASTFRAGMENT_TAG = "FCFT";
+
+    private String mLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.v(LOG_TAG, "OnCreate");
+        if (savedInstanceState == null) {
+            getFragmentManager().beginTransaction()
+                    .add(R.id.container, new ForecastFragment(), FORECASTFRAGMENT_TAG)
+                    .commit();
+            //Needed to execute the changes
+            getFragmentManager().executePendingTransactions();
+        }
+        updateLocation();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateLocation();
     }
 
 
@@ -49,8 +62,7 @@ public class MainActivity extends Activity {
     }
 
     private void showPreferedLocationOnMap() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String location = preferences.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default));
+        String location = Utility.getPreferredLocation(this);
         Uri.Builder builder = new Uri.Builder();
         builder.scheme("geo")
                 .appendEncodedPath("0,0")
@@ -65,6 +77,18 @@ public class MainActivity extends Activity {
             startActivity(intent);
         } else {
             Log.w(LOG_TAG, "No activity found to receive the intent.");
+        }
+    }
+
+    private void updateLocation() {
+        String location = Utility.getPreferredLocation( this );
+        // update the location in our second pane using the fragment manager
+        if (location != null && !location.equals(mLocation)) {
+            ForecastFragment ff = (ForecastFragment)getFragmentManager().findFragmentByTag(FORECASTFRAGMENT_TAG);
+            if ( null != ff ) {
+                ff.onLocationChanged();
+            }
+            mLocation = location;
         }
     }
 }
