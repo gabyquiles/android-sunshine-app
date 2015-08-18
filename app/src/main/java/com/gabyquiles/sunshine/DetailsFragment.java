@@ -15,16 +15,19 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ShareActionProvider;
 import android.widget.TextView;
 
 import com.gabyquiles.sunshine.data.WeatherContract;
 
+import org.w3c.dom.Text;
+
 /**
  * A placeholder fragment containing a simple view.
  */
-public class DetailsActivityFragment extends Fragment  implements LoaderManager.LoaderCallbacks<Cursor>{
-    private final String LOG_TAG = DetailsActivityFragment.class.getSimpleName();
+public class DetailsFragment extends Fragment  implements LoaderManager.LoaderCallbacks<Cursor>{
+    private final String LOG_TAG = DetailsFragment.class.getSimpleName();
     private static final String FORECAST_SHARE_HASHTAG = " #SunshineApp";
 
     private ShareActionProvider mShareActionProvider;
@@ -43,6 +46,10 @@ public class DetailsActivityFragment extends Fragment  implements LoaderManager.
             WeatherContract.WeatherEntry.COLUMN_SHORT_DESC,
             WeatherContract.WeatherEntry.COLUMN_MAX_TEMP,
             WeatherContract.WeatherEntry.COLUMN_MIN_TEMP,
+            WeatherContract.WeatherEntry.COLUMN_HUMIDITY,
+            WeatherContract.WeatherEntry.COLUMN_WIND_SPEED,
+            WeatherContract.WeatherEntry.COLUMN_DEGREES,
+            WeatherContract.WeatherEntry.COLUMN_PRESSURE,
     };
 
     // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
@@ -51,8 +58,22 @@ public class DetailsActivityFragment extends Fragment  implements LoaderManager.
     static final int COL_WEATHER_DESC = 1;
     static final int COL_WEATHER_MAX_TEMP = 2;
     static final int COL_WEATHER_MIN_TEMP = 3;
+    static final int COL_WEATHER_HUMIDITY = 4;
+    static final int COL_WEATHER_WIND_SPEED = 5;
+    static final int COL_WEATHER_WIND_DIRECTION = 6;
+    static final int COL_WEATHER_PRESSURE = 7;
 
-    public DetailsActivityFragment() {
+    public ImageView mForecastIconImageView;
+    public TextView mDayNameTextView;
+    public TextView mDateTextView;
+    public TextView mForecastTextView;
+    public TextView mHighTempTextView;
+    public TextView mLowTempTextView;
+    public TextView mHumidityTextView;
+    public TextView mWindTextView;
+    public TextView mPressureTextView;
+
+    public DetailsFragment() {
         //Indicates activity that this fragment also has menu options
         setHasOptionsMenu(true);
     }
@@ -60,7 +81,18 @@ public class DetailsActivityFragment extends Fragment  implements LoaderManager.
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_details, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_details, container, false);
+        mDayNameTextView = (TextView) rootView.findViewById(R.id.day_name_textview);
+        mDateTextView= (TextView) rootView.findViewById(R.id.date_textview);
+        mForecastTextView = (TextView) rootView.findViewById(R.id.forecast_textview);
+        mHighTempTextView = (TextView) rootView.findViewById(R.id.high_temp_textview);
+        mLowTempTextView = (TextView) rootView.findViewById(R.id.low_temp_textview);
+        mHumidityTextView = (TextView) rootView.findViewById(R.id.humidity_textview);
+        mWindTextView = (TextView) rootView.findViewById(R.id.wind_textview);
+        mPressureTextView = (TextView) rootView.findViewById(R.id.pressure_textview);
+        mForecastIconImageView = (ImageView) rootView.findViewById(R.id.forecast_icon_imageview);
+
+        return rootView;
     }
 
     @Override
@@ -129,18 +161,35 @@ public class DetailsActivityFragment extends Fragment  implements LoaderManager.
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.v(LOG_TAG, "In onLoadFinished");
         if (!data.moveToFirst()) { return; }
-
-        String dateString = Utility.formatDate(
-                data.getLong(COL_WEATHER_DATE));
-        String weatherDescription = data.getString(COL_WEATHER_DESC);
         boolean isMetric = Utility.isMetric(getActivity());
-        String high = Utility.formatTemperature(data.getDouble(COL_WEATHER_MAX_TEMP), isMetric);
-        String low = Utility.formatTemperature(data.getDouble(COL_WEATHER_MIN_TEMP), isMetric);
-        mForecast = String.format("%s - %s - %s/%s", dateString, weatherDescription, high, low);
-        TextView detailTextView = (TextView)getView().findViewById(R.id.detail_text);
-        detailTextView.setText(mForecast);
+
+        String dayName = Utility.getDayName(getActivity(), data.getLong(COL_WEATHER_DATE));
+
+        mDayNameTextView.setText(dayName);
+
+        String dateString = Utility.getFormattedMonthDay(getActivity(), data.getLong(COL_WEATHER_DATE));
+        mDateTextView.setText(dateString);
+
+        String weatherDescription = data.getString(COL_WEATHER_DESC);
+        mForecastTextView.setText(weatherDescription);
+
+        String high = Utility.formatTemperature(getActivity(), data.getDouble(COL_WEATHER_MAX_TEMP), isMetric);
+        mHighTempTextView.setText(high);
+
+        String low = Utility.formatTemperature(getActivity(), data.getDouble(COL_WEATHER_MIN_TEMP), isMetric);
+        mLowTempTextView.setText(low);
+
+        String humidity = getActivity().getString(R.string.format_humidity, data.getDouble(COL_WEATHER_HUMIDITY));
+        mHumidityTextView.setText(humidity);
+
+        String wind = Utility.getFormattedWind(getActivity(), data.getFloat(COL_WEATHER_WIND_SPEED), data.getFloat(COL_WEATHER_WIND_DIRECTION));
+        mWindTextView.setText(wind);
+
+        String pressure = getActivity().getString(R.string.format_pressure, data.getDouble(COL_WEATHER_PRESSURE));
+        mPressureTextView.setText(pressure);
+
+        mForecastIconImageView.setImageDrawable(getActivity().getDrawable(R.mipmap.ic_launcher));
 
         // If onCreateOptionsMenu has already happened, we need to update the share intent now.
         if (mShareActionProvider != null) {
@@ -152,5 +201,4 @@ public class DetailsActivityFragment extends Fragment  implements LoaderManager.
     public void onLoaderReset(Loader<Cursor> loader) {
 
     }
-
 }
