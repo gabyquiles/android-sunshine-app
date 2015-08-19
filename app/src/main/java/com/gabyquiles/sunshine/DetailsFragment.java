@@ -50,6 +50,7 @@ public class DetailsFragment extends Fragment  implements LoaderManager.LoaderCa
             WeatherContract.WeatherEntry.COLUMN_WIND_SPEED,
             WeatherContract.WeatherEntry.COLUMN_DEGREES,
             WeatherContract.WeatherEntry.COLUMN_PRESSURE,
+            WeatherContract.WeatherEntry.COLUMN_WEATHER_ID,
     };
 
     // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
@@ -62,6 +63,7 @@ public class DetailsFragment extends Fragment  implements LoaderManager.LoaderCa
     static final int COL_WEATHER_WIND_SPEED = 5;
     static final int COL_WEATHER_WIND_DIRECTION = 6;
     static final int COL_WEATHER_PRESSURE = 7;
+    static final int COL_WEATHER_ID = 8;
 
     public ImageView mForecastIconImageView;
     public TextView mDayNameTextView;
@@ -189,7 +191,9 @@ public class DetailsFragment extends Fragment  implements LoaderManager.LoaderCa
         String pressure = getActivity().getString(R.string.format_pressure, data.getDouble(COL_WEATHER_PRESSURE));
         mPressureTextView.setText(pressure);
 
-        mForecastIconImageView.setImageDrawable(getActivity().getDrawable(R.mipmap.ic_launcher));
+
+        int iconId = Utility.getArtResourceForWeatherCondition(data.getInt(COL_WEATHER_ID));
+        mForecastIconImageView.setImageResource(iconId);
 
         // If onCreateOptionsMenu has already happened, we need to update the share intent now.
         if (mShareActionProvider != null) {

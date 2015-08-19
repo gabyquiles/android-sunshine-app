@@ -36,29 +36,6 @@ public class ForecastAdapter extends CursorAdapter {
         return 2;
     }
 
-//    /**
-//     * Prepare the weather high/lows for presentation.
-//     */
-//    private String formatHighLows(double high, double low) {
-//        boolean isMetric = Utility.isMetric(mContext);
-//        String highLowStr = Utility.formatTemperature(high, isMetric) + "/" + Utility.formatTemperature(low, isMetric);
-//        return highLowStr;
-//    }
-
-//    /*
-//        This is ported from FetchWeatherTask --- but now we go straight from the cursor to the
-//        string.
-//     */
-//    private String convertCursorRowToUXFormat(Cursor cursor) {
-//        String highAndLow = formatHighLows(
-//                cursor.getDouble(ForecastFragment.COL_WEATHER_MAX_TEMP),
-//                cursor.getDouble(ForecastFragment.COL_WEATHER_MIN_TEMP));
-//
-//        return Utility.formatDate(cursor.getLong(ForecastFragment.COL_WEATHER_DATE)) +
-//                " - " + cursor.getString(ForecastFragment.COL_WEATHER_DESC) +
-//                " - " + highAndLow;
-//    }
-
     /*
         Remember that these views are reused as needed.
      */
@@ -98,9 +75,19 @@ public class ForecastAdapter extends CursorAdapter {
 
         boolean isMetric = Utility.isMetric(context);
 
-        viewHolder.iconView.setImageResource(R.mipmap.ic_launcher);
+        int iconId = Utility.getIconResourceForWeatherCondition(cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID));
+        String dateStr = Utility.getDayName(context, cursor.getLong(ForecastFragment.COL_WEATHER_DATE));
+        if (getItemViewType(cursor.getPosition()) == VIEW_TYPE_TODAY) {
+            iconId = Utility.getArtResourceForWeatherCondition(cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID));
+            dateStr = Utility.getFormattedMonthDay(context, cursor.getLong(ForecastFragment.COL_WEATHER_DATE));
+        }
+
+        viewHolder.iconView.setImageResource(iconId);
 
         viewHolder.descriptionView.setText(cursor.getString(ForecastFragment.COL_WEATHER_DESC));
+
+
+        viewHolder.dateView.setText(dateStr);
 
         // Read high temperature from cursor
         float high = cursor.getFloat(ForecastFragment.COL_WEATHER_MAX_TEMP);
