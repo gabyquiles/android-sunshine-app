@@ -1,10 +1,12 @@
 package com.gabyquiles.sunshine;
 
-import android.app.Fragment;
-import android.app.LoaderManager;
-import android.content.CursorLoader;
+
+import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v4.view.MenuItemCompat;
 import android.content.Intent;
-import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,12 +18,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ShareActionProvider;
+import android.support.v7.widget.ShareActionProvider;
 import android.widget.TextView;
 
 import com.gabyquiles.sunshine.data.WeatherContract;
-
-import org.w3c.dom.Text;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -29,13 +29,15 @@ import org.w3c.dom.Text;
 public class DetailsFragment extends Fragment  implements LoaderManager.LoaderCallbacks<Cursor>{
     private final String LOG_TAG = DetailsFragment.class.getSimpleName();
     private static final String FORECAST_SHARE_HASHTAG = " #SunshineApp";
+    static final String DETAIL_URI = "URI";
 
     private ShareActionProvider mShareActionProvider;
     private String mForecast;
+    private Uri mUri;
 
-    private static final int FORECAST_LOADER = 0;
+    private static final int DETAIL_LOADER = 0;
 
-    private static final String[] FORECAST_COLUMNS = {
+    private static final String[] DETAIL_COLUMNS = {
             // In this case the id needs to be fully qualified with a table name, since
             // the content provider joins the location & weather tables in the background
             // (both have an _id column)
@@ -53,7 +55,7 @@ public class DetailsFragment extends Fragment  implements LoaderManager.LoaderCa
             WeatherContract.WeatherEntry.COLUMN_WEATHER_ID,
     };
 
-    // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
+    // These indices are tied to DETAIL_COLUMNS.  If DETAIL_COLUMNS changes, these
     // must change.
     static final int COL_WEATHER_DATE = 0;
     static final int COL_WEATHER_DESC = 1;
@@ -83,6 +85,11 @@ public class DetailsFragment extends Fragment  implements LoaderManager.LoaderCa
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            mUri = arguments.getParcelable(DetailsFragment.DETAIL_URI);
+        }
+
         View rootView = inflater.inflate(R.layout.fragment_details, container, false);
         mDayNameTextView = (TextView) rootView.findViewById(R.id.day_name_textview);
         mDateTextView= (TextView) rootView.findViewById(R.id.date_textview);
@@ -103,7 +110,7 @@ public class DetailsFragment extends Fragment  implements LoaderManager.LoaderCa
          * Initializes the CursorLoader. The URL_LOADER value is eventually passed
          * to onCreateLoader().
          */
-        getLoaderManager().initLoader(FORECAST_LOADER, null, this);
+        getLoaderManager().initLoader(DETAIL_LOADER, null, this);
         super.onActivityCreated(savedInstance);
     }
 
@@ -117,13 +124,13 @@ public class DetailsFragment extends Fragment  implements LoaderManager.LoaderCa
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.forecastfragment, menu);
+        inflater.inflate(R.menu.menu_details, menu);
 
         //Get MenuItem for sharing
         MenuItem item = menu.findItem(R.id.action_share);
 
         //Get share provider
-        mShareActionProvider = (ShareActionProvider) item.getActionProvider();
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
 
         //Atthach an intent to this ShareActionProvider. Update when data to be shared changes
         if(mShareActionProvider != null) {
@@ -142,23 +149,19 @@ public class DetailsFragment extends Fragment  implements LoaderManager.LoaderCa
     @Override
     public Loader<Cursor> onCreateLoader(int loaderID, Bundle bundle)
     {
+        if (null != mUri) {
 
-        Intent intent = getActivity().getIntent();
-        if (intent == null) {
-            return null;
+            // Now create and return a CursorLoader that will take care of
+            // creating a Cursor for the data being displayed.
+
+            return new CursorLoader(getActivity(),
+                    mUri,
+                    DETAIL_COLUMNS,
+                    null,
+                    null,
+                    null);
         }
-        String locationSetting = Utility.getPreferredLocation(getActivity());
-
-        String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC";
-        Uri weatherForLocationUri = WeatherContract.WeatherEntry.buildWeatherLocationWithStartDate(
-                locationSetting, System.currentTimeMillis());
-
-        return new CursorLoader(getActivity(),
-                intent.getData(),
-                FORECAST_COLUMNS,
-                null,
-                null,
-                null);
+        return null;
     }
 
     @Override
@@ -204,5 +207,16 @@ public class DetailsFragment extends Fragment  implements LoaderManager.LoaderCa
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    void onLocationChanged( String newLocation ) {
+        // replace the uri, since the location has changed
+        Uri uri = mUri;
+        if (null != uri) {
+            long date = WeatherContract.WeatherEntry.getDateFromUri(uri);
+            Uri updatedUri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(newLocation, date);
+            mUri = updatedUri;
+            getLoaderManager().restartLoader(DETAIL_LOADER, null, this);
+        }
     }
 }
