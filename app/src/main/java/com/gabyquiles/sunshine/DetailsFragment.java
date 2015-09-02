@@ -179,10 +179,10 @@ public class DetailsFragment extends Fragment  implements LoaderManager.LoaderCa
         String weatherDescription = data.getString(COL_WEATHER_DESC);
         mForecastTextView.setText(weatherDescription);
 
-        String high = Utility.formatTemperature(getActivity(), data.getDouble(COL_WEATHER_MAX_TEMP), isMetric);
+        String high = Utility.formatTemperature(getActivity(), data.getDouble(COL_WEATHER_MAX_TEMP));
         mHighTempTextView.setText(high);
 
-        String low = Utility.formatTemperature(getActivity(), data.getDouble(COL_WEATHER_MIN_TEMP), isMetric);
+        String low = Utility.formatTemperature(getActivity(), data.getDouble(COL_WEATHER_MIN_TEMP));
         mLowTempTextView.setText(low);
 
         String humidity = getActivity().getString(R.string.format_humidity, data.getDouble(COL_WEATHER_HUMIDITY));

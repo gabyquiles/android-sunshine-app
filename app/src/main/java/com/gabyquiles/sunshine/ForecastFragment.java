@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.gabyquiles.sunshine.data.WeatherContract;
+import com.gabyquiles.sunshine.sync.SunshineSyncAdapter;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -84,9 +85,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void updateWeather() {
-        FetchWeatherTask task = new FetchWeatherTask(getActivity());
-        String location = Utility.getPreferredLocation(getActivity());
-        task.execute(location);
+        SunshineSyncAdapter.syncImmediately(getActivity());
     }
 
     public void setUseTodayLayout(boolean useTodayLayout) {
