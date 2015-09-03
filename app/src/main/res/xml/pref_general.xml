@@ -19,5 +19,9 @@
         android:entryValues="@array/pref_units_values"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null" />
+    <CheckBoxPreference
+        android:key="@string/pref_notification_key"
+        android:title="@string/pref_notification_label"
+        android:defaultValue="true" />
 
 </PreferenceScreen>

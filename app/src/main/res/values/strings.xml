@@ -26,6 +26,11 @@
     <string name="pref_units_metric_value">metric</string>
     <string name="pref_units_imperial_value">imperial</string>
 
+    <!-- Label for notifications preference [CHAR LIMIT=30] -->
+    <string name="pref_notification_label">Notifications</string>
+    <!-- Key name for storing notifications in SharedPreferences [CHAR LIMIT=NONE] -->
+    <string name="pref_notification_key" translatable="false">notifications</string>
+
     <string name="share_title">Share</string>
 
     <!-- Date label when displaying today's weather forecast [CHAR LIMIT=20] -->
