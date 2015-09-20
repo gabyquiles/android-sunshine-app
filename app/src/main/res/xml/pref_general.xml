@@ -1,12 +1,15 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res/com.gabyquiles.sunshine">
     <!-- NOTE: EditTextPreference accepts EditText attributes. -->
     <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
-    <EditTextPreference
+    <com.gabyquiles.sunshine.LocationEditTextPreference
         android:key="@string/pref_location_key"
         android:title="@string/pref_location_label"
         android:defaultValue="@string/pref_location_default"
         android:inputType="textCapWords"
-        android:singleLine="true" />
+        android:singleLine="true"
+        custom:minLength="3"/>
 
     <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
          dismiss it. -->

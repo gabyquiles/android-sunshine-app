@@ -17,8 +17,12 @@ package com.gabyquiles.sunshine;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.text.format.Time;
+
+import com.gabyquiles.sunshine.sync.SunshineSyncAdapter;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -248,5 +252,35 @@ public class Utility {
             return R.drawable.art_clouds;
         }
         return -1;
+    }
+
+    /**
+     * Returns true if the network is available or about to become available.
+     *
+     * @param c Context used to get the ConnectivityManager
+     * @return
+     */
+    static public boolean isNetworkAvailable(Context c) {
+        ConnectivityManager cm =
+                (ConnectivityManager)c.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+    }
+
+    @SuppressWarnings("ResourceType")
+    static public @SunshineSyncAdapter.LocationStatus int getLocationStatus(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getInt(context.getString(R.string.pref_location_status_key),
+                SunshineSyncAdapter.LOCATION_STATUS_UNKNOWN);
+    }
+
+    static public void resetLocationStatus(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt(context.getString(R.string.pref_location_status_key),
+                SunshineSyncAdapter.LOCATION_STATUS_UNKNOWN);
+        editor.apply();
     }
 }

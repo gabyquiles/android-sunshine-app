@@ -1,6 +1,8 @@
 package com.gabyquiles.sunshine;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -17,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.gabyquiles.sunshine.data.WeatherContract;
 import com.gabyquiles.sunshine.sync.SunshineSyncAdapter;
@@ -24,12 +27,13 @@ import com.gabyquiles.sunshine.sync.SunshineSyncAdapter;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SharedPreferences.OnSharedPreferenceChangeListener {
     private final String LOG_TAG = ForecastFragment.class.getSimpleName();
 
     private static final int FORECAST_LOADER = 0;
-    protected ForecastAdapter mAdapter;
+    private ForecastAdapter mAdapter;
     private ListView mListView;
+    private TextView mEmptyView;
     private int mPosition = ListView.INVALID_POSITION;
     private static final String SELECTED_KEY = "selected_position";
     private boolean mUseTodayLayout = true;
@@ -72,6 +76,20 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     @Override
+    public void onResume() {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sp.registerOnSharedPreferenceChangeListener(this);
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sp.unregisterOnSharedPreferenceChangeListener(this);
+        super.onPause();
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.forecastfragment, menu);
     }
@@ -110,6 +128,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
         mListView = (ListView) rootView.findViewById(R.id.listview_forecast);
         mListView.setAdapter(mAdapter);
+        mEmptyView = (TextView) rootView.findViewById(R.id.empty);
+        mListView.setEmptyView(mEmptyView);
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -193,7 +213,33 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             // to, do so now.
             mListView.smoothScrollToPosition(mPosition);
         }
+        updateEmptyView();
+    }
 
+    private void updateEmptyView() {
+        if(mAdapter.getCount() == 0) {
+            TextView emptyView = (TextView) getView().findViewById(R.id.empty);
+            if(emptyView != null) {
+                int message = R.string.error_empty_forecaste_list;
+
+                @SunshineSyncAdapter.LocationStatus int status = Utility.getLocationStatus(getActivity());
+                switch (status) {
+                    case SunshineSyncAdapter.LOCATION_STATUS_SERVER_DOWN:
+                        message = R.string.error_server_down;
+                        break;
+                    case SunshineSyncAdapter.LOCATION_STATUS_SERVER_INVALID:
+                        message = R. string.error_server_error;
+                        break;
+                    case SunshineSyncAdapter.LOCATION_STATUS_INVALID_LOCATION:
+                        message = R.string.error_location_invalid;
+                    default:
+                        if (!Utility.isNetworkAvailable(getActivity())) {
+                            message = R.string.error_no_network_connection;
+                        }
+                }
+                emptyView.setText(message);
+            }
+        }
     }
 
     @Override
@@ -243,6 +289,12 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         /**
          * DetailFragmentCallback for when an item has been selected.
          */
-        public void onItemSelected(Uri dateUri);
+        void onItemSelected(Uri dateUri);
+    }
+
+    public void onSharedPreferenceChanged (SharedPreferences sharedPreferences, String key) {
+        if(key.equals(getString(R.string.pref_location_status_key))) {
+            updateEmptyView();
+        }
     }
 }
