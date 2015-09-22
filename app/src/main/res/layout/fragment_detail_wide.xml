@@ -96,7 +96,8 @@ android:fillViewport="true">
         <ImageView
             android:id="@+id/forecast_icon_imageview"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content" />
+            android:layout_width="wrap_content"
+            android:adjustViewBounds="true"/>
 
         <TextView
             android:fontFamily="sans-serif-condensed"

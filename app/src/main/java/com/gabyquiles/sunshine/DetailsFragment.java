@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.support.v7.widget.ShareActionProvider;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.gabyquiles.sunshine.data.WeatherContract;
 
 /**
@@ -199,9 +200,12 @@ public class DetailsFragment extends Fragment  implements LoaderManager.LoaderCa
         mPressureTextView.setText(pressure);
         mPressureTextView.setContentDescription(pressure);
 
-
-        int iconId = Utility.getArtResourceForWeatherCondition(data.getInt(COL_WEATHER_ID));
-        mForecastIconImageView.setImageResource(iconId);
+        int weatherId = data.getInt(COL_WEATHER_ID);
+        Glide.with(this)
+                .load(Utility.getArtUrlForWeatherCondition(getActivity(), weatherId))
+                .error(Utility.getArtResourceForWeatherCondition(weatherId))
+                .crossFade()
+                .into(mForecastIconImageView);
         mForecastIconImageView.setContentDescription(getString(R.string.a11y_forecast_icon, weatherDescription));
 
         // If onCreateOptionsMenu has already happened, we need to update the share intent now.
