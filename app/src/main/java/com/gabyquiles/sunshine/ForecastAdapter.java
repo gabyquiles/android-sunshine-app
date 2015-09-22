@@ -74,8 +74,6 @@ public class ForecastAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
-        boolean isMetric = Utility.isMetric(context);
-
         int iconId = Utility.getIconResourceForWeatherCondition(cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID));
         String dateStr = Utility.getDayName(context, cursor.getLong(ForecastFragment.COL_WEATHER_DATE));
         if (getItemViewType(cursor.getPosition()) == VIEW_TYPE_TODAY) {
@@ -85,17 +83,24 @@ public class ForecastAdapter extends CursorAdapter {
 
         viewHolder.iconView.setImageResource(iconId);
 
-        viewHolder.descriptionView.setText(cursor.getString(ForecastFragment.COL_WEATHER_DESC));
+        String forecast_conditions = cursor.getString(ForecastFragment.COL_WEATHER_DESC);
+        viewHolder.descriptionView.setText(forecast_conditions);
+        viewHolder.descriptionView.setContentDescription(context.getString(R.string.a11y_forecast, forecast_conditions));
 
 
         viewHolder.dateView.setText(dateStr);
 
         // Read high temperature from cursor
+
         float high = cursor.getFloat(ForecastFragment.COL_WEATHER_MAX_TEMP);
-        viewHolder.highTempView.setText(Utility.formatTemperature(context, high));
+        String high_temp = Utility.formatTemperature(context, high);
+        viewHolder.highTempView.setText(high_temp);
+        viewHolder.highTempView.setContentDescription(context.getString(R.string.a11y_high_temp, high_temp));
 
         float low = cursor.getFloat(ForecastFragment.COL_WEATHER_MIN_TEMP);
-        viewHolder.lowTempView.setText(Utility.formatTemperature(context, low));
+        String low_temp = Utility.formatTemperature(context, low);
+        viewHolder.lowTempView.setText(low_temp);
+        viewHolder.lowTempView.setContentDescription(context.getString(R.string.a11y_low_temp, low_temp));
 
     }
 

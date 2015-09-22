@@ -167,7 +167,6 @@ public class DetailsFragment extends Fragment  implements LoaderManager.LoaderCa
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (!data.moveToFirst()) { return; }
-        boolean isMetric = Utility.isMetric(getActivity());
 
         String dayName = Utility.getDayName(getActivity(), data.getLong(COL_WEATHER_DATE));
 
@@ -178,25 +177,32 @@ public class DetailsFragment extends Fragment  implements LoaderManager.LoaderCa
 
         String weatherDescription = data.getString(COL_WEATHER_DESC);
         mForecastTextView.setText(weatherDescription);
+        mForecastTextView.setContentDescription(getString(R.string.a11y_forecast, weatherDescription));
 
         String high = Utility.formatTemperature(getActivity(), data.getDouble(COL_WEATHER_MAX_TEMP));
         mHighTempTextView.setText(high);
+        mHighTempTextView.setContentDescription(getString(R.string.a11y_high_temp, high));
 
         String low = Utility.formatTemperature(getActivity(), data.getDouble(COL_WEATHER_MIN_TEMP));
         mLowTempTextView.setText(low);
+        mLowTempTextView.setContentDescription(getString(R.string.a11y_low_temp, low));
 
         String humidity = getActivity().getString(R.string.format_humidity, data.getDouble(COL_WEATHER_HUMIDITY));
         mHumidityTextView.setText(humidity);
+        mHumidityTextView.setContentDescription(humidity);
 
         String wind = Utility.getFormattedWind(getActivity(), data.getFloat(COL_WEATHER_WIND_SPEED), data.getFloat(COL_WEATHER_WIND_DIRECTION));
         mWindTextView.setText(wind);
+        mWindTextView.setContentDescription(wind);
 
         String pressure = getActivity().getString(R.string.format_pressure, data.getDouble(COL_WEATHER_PRESSURE));
         mPressureTextView.setText(pressure);
+        mPressureTextView.setContentDescription(pressure);
 
 
         int iconId = Utility.getArtResourceForWeatherCondition(data.getInt(COL_WEATHER_ID));
         mForecastIconImageView.setImageResource(iconId);
+        mForecastIconImageView.setContentDescription(getString(R.string.a11y_forecast_icon, weatherDescription));
 
         // If onCreateOptionsMenu has already happened, we need to update the share intent now.
         if (mShareActionProvider != null) {
