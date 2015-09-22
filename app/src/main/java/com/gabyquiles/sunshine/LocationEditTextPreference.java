@@ -28,9 +28,8 @@ public class LocationEditTextPreference extends EditTextPreference {
                 R.styleable.LocationEditTextPreference, 0, 0);
 
         try {
-            int minLength = a.getInteger(R.styleable.LocationEditTextPreference_minLength,
+            mMinLength = a.getInteger(R.styleable.LocationEditTextPreference_minLength,
                     DEFAULT_MINIMUM_LOCATION_LENGTH);
-            Log.v(LOG_TAG, new Integer(minLength).toString());
         } finally {
             a.recycle();
         }
@@ -38,6 +37,8 @@ public class LocationEditTextPreference extends EditTextPreference {
 
     @Override
     public void showDialog(Bundle state) {
+        super.showDialog(state);
+
         EditText editText = getEditText();
         editText.addTextChangedListener(new TextWatcher() {
             @Override
