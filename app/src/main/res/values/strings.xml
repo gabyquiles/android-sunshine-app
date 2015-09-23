@@ -102,6 +102,15 @@
     <string name="a11y_forecast_icon">Forecast icon: <xliff:g id="condition">%1$s</xliff:g></string>
 
     <!-- Format for retrieving art from an external source [CHAR LIMIT=NONE] -->
-    <string name="format_art_url" translatable="false">https://raw.githubusercontent.com/udacity/Sunshine-Version-2/sunshine_master/app/src/main/res/drawable-xxhdpi/art_<xliff:g id="description">%s</xliff:g>.png</string>
+    <string name="format_art_url" translatable="false"><xliff:g id="url">%s</xliff:g>/art_<xliff:g id="description">%s</xliff:g>.png</string>
+
+    <string name="pref_iconset_label">Icon Set</string>
+    <string name="pref_iconset_key" translatable="false">iconset_url</string>
+    <string name="pref_iconset_colored_label" translatable="false">Colored</string>
+    <string name="pref_iconset_mono_label" translatable="false">Mono</string>
+    <string name="pref_iconset_default_label" translatable="false">Default</string>
+    <string name="pref_iconset_default_url" translatable="false">local</string>
+    <string name="pref_iconset_colored_url" translatable="false">https://raw.githubusercontent.com/udacity/sunshine_icons/master/Archive/Colored</string>
+    <string name="pref_iconset_mono_url" translatable="false">https://raw.githubusercontent.com/udacity/sunshine_icons/master/Archive/Mono</string>
 
 </resources>

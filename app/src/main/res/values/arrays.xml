@@ -8,4 +8,14 @@
         <item>@string/pref_units_metric_value</item>
         <item>@string/pref_units_imperial_value</item>
     </string-array>
+    <string-array name="pref_iconset_labels">
+        <item>@string/pref_iconset_default_label</item>
+        <item>@string/pref_iconset_colored_label</item>
+        <item>@string/pref_iconset_mono_label</item>
+    </string-array>
+    <string-array name="pref_iconset_urls">
+        <item>@string/pref_iconset_default_url</item>
+        <item>@string/pref_iconset_colored_url</item>
+        <item>@string/pref_iconset_mono_url</item>
+    </string-array>
 </resources>

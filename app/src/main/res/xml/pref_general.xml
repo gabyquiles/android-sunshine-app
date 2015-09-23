@@ -15,6 +15,14 @@
          dismiss it. -->
     <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
     <ListPreference
+        android:key="@string/pref_iconset_key"
+        android:title="@string/pref_iconset_label"
+        android:defaultValue="@string/pref_iconset_default_url"
+        android:entries="@array/pref_iconset_labels"
+        android:entryValues="@array/pref_iconset_urls"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null" />
+    <ListPreference
         android:key="@string/pref_units_key"
         android:title="@string/pref_units_label"
         android:defaultValue="@string/pref_units_default"
