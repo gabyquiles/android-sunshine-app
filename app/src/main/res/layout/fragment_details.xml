@@ -1,99 +1,23 @@
-
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:gravity="center_vertical"
-        android:layout_gravity="start"
-        android:layout_height="wrap_content"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/white" />
 
-        <TextView android:id="@+id/day_name_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-condensed"
-            android:textColor="@color/black"
-            android:textSize="24sp"/>
-        <TextView android:id="@+id/date_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-condensed"
-            android:textColor="@color/grey_700"
-            android:textSize="16sp"/>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_horizontal"
-            android:layout_marginTop="16dp">
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="start"
-                android:orientation="vertical">
-                <TextView
-                    android:fontFamily="sans-serif-light"
-                    android:id="@+id/high_temp_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="96sp" />
-                <TextView
-                    android:id="@+id/low_temp_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:textColor="@color/grey_700"
-                    android:textSize="48sp"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:layout_gravity="center"
-                android:orientation="vertical">
-                <ImageView
-                    android:id="@+id/forecast_icon_imageview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"/>
-                <TextView
-                    android:id="@+id/forecast_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:textAppearanceLarge"
-                    android:textColor="@color/grey_700"/>
-            </LinearLayout>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_height="match_parent"
-            android:layout_marginRight="0dp"
-            android:layout_marginEnd="0dp"
-            android:layout_marginTop="16dp"
-            android:layout_width="match_parent"
-            android:orientation="vertical">
+    <include layout="@layout/detail_today_grid"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"/>
 
-            <TextView
-                android:id="@+id/humidity_textview"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:textAppearance="?android:textAppearanceLarge" />
+    <include layout="@layout/details_extra_grid"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"/>
 
-            <TextView
-                android:id="@+id/pressure_textview"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_width="match_parent"
-                android:textAppearance="?android:textAppearanceLarge" />
-
-            <TextView
-                android:id="@+id/wind_textview"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_width="match_parent"
-                android:textAppearance="?android:textAppearanceLarge" />
-        </LinearLayout>
-    </LinearLayout>
-</ScrollView>
+</LinearLayout>

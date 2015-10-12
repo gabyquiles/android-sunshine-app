@@ -5,12 +5,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.view.MenuItemCompat;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,7 +32,6 @@ public class DetailsFragment extends Fragment  implements LoaderManager.LoaderCa
     private static final String FORECAST_SHARE_HASHTAG = " #SunshineApp";
     static final String DETAIL_URI = "URI";
 
-    private ShareActionProvider mShareActionProvider;
     private String mForecast;
     private Uri mUri;
 
@@ -69,7 +68,6 @@ public class DetailsFragment extends Fragment  implements LoaderManager.LoaderCa
     static final int COL_WEATHER_ID = 8;
 
     public ImageView mForecastIconImageView;
-    public TextView mDayNameTextView;
     public TextView mDateTextView;
     public TextView mForecastTextView;
     public TextView mHighTempTextView;
@@ -91,16 +89,15 @@ public class DetailsFragment extends Fragment  implements LoaderManager.LoaderCa
             mUri = arguments.getParcelable(DetailsFragment.DETAIL_URI);
         }
 
-        View rootView = inflater.inflate(R.layout.fragment_details, container, false);
-        mDayNameTextView = (TextView) rootView.findViewById(R.id.day_name_textview);
-        mDateTextView= (TextView) rootView.findViewById(R.id.date_textview);
-        mForecastTextView = (TextView) rootView.findViewById(R.id.forecast_textview);
-        mHighTempTextView = (TextView) rootView.findViewById(R.id.high_temp_textview);
-        mLowTempTextView = (TextView) rootView.findViewById(R.id.low_temp_textview);
-        mHumidityTextView = (TextView) rootView.findViewById(R.id.humidity_textview);
-        mWindTextView = (TextView) rootView.findViewById(R.id.wind_textview);
-        mPressureTextView = (TextView) rootView.findViewById(R.id.pressure_textview);
-        mForecastIconImageView = (ImageView) rootView.findViewById(R.id.forecast_icon_imageview);
+        View rootView = inflater.inflate(R.layout.fragment_detail_start, container, false);
+        mDateTextView= (TextView) rootView.findViewById(R.id.detail_date_textview);
+        mForecastTextView = (TextView) rootView.findViewById(R.id.detail_forecast_textview);
+        mHighTempTextView = (TextView) rootView.findViewById(R.id.detail_high_textview);
+        mLowTempTextView = (TextView) rootView.findViewById(R.id.detail_low_textview);
+        mHumidityTextView = (TextView) rootView.findViewById(R.id.detail_humidity_textview);
+        mWindTextView = (TextView) rootView.findViewById(R.id.detail_wind_textview);
+        mPressureTextView = (TextView) rootView.findViewById(R.id.detail_pressure_textview);
+        mForecastIconImageView = (ImageView) rootView.findViewById(R.id.detail_icon);
 
         return rootView;
     }
@@ -123,21 +120,18 @@ public class DetailsFragment extends Fragment  implements LoaderManager.LoaderCa
         return shareIntent;
     }
 
+    private void finishCreatingMenu(Menu menu) {
+        // Retrieve the share menu item
+        MenuItem menuItem = menu.findItem(R.id.action_share);
+        menuItem.setIntent(createShareForecastIntent());
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_details, menu);
-
-        //Get MenuItem for sharing
-        MenuItem item = menu.findItem(R.id.action_share);
-
-        //Get share provider
-        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
-
-        //Atthach an intent to this ShareActionProvider. Update when data to be shared changes
-        if(mShareActionProvider != null) {
-            mShareActionProvider.setShareIntent(createShareForecastIntent());
-        } else {
-            Log.v(LOG_TAG, "Share action provider is null");
+        if ( getActivity() instanceof DetailsActivity ){
+            // Inflate the menu; this adds items to the action bar if it is present.
+            inflater.inflate(R.menu.menu_details, menu);
+            finishCreatingMenu(menu);
         }
     }
 
@@ -169,9 +163,7 @@ public class DetailsFragment extends Fragment  implements LoaderManager.LoaderCa
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (!data.moveToFirst()) { return; }
 
-        String dayName = Utility.getDayName(getActivity(), data.getLong(COL_WEATHER_DATE));
-
-        mDayNameTextView.setText(dayName);
+        getView().setVisibility(View.VISIBLE);
 
         String dateString = Utility.getFormattedMonthDay(getActivity(), data.getLong(COL_WEATHER_DATE));
         mDateTextView.setText(dateString);
@@ -208,9 +200,26 @@ public class DetailsFragment extends Fragment  implements LoaderManager.LoaderCa
                 .into(mForecastIconImageView);
         mForecastIconImageView.setContentDescription(getString(R.string.a11y_forecast_icon, weatherDescription));
 
-        // If onCreateOptionsMenu has already happened, we need to update the share intent now.
-        if (mShareActionProvider != null) {
-            mShareActionProvider.setShareIntent(createShareForecastIntent());
+        AppCompatActivity activity = (AppCompatActivity)getActivity();
+        Toolbar toolbarView = (Toolbar) getView().findViewById(R.id.toolbar);
+
+        // We need to start the enter transition after the data has loaded
+        if (activity instanceof DetailsActivity) {
+            activity.supportStartPostponedEnterTransition();
+
+            if ( null != toolbarView ) {
+                activity.setSupportActionBar(toolbarView);
+
+                activity.getSupportActionBar().setDisplayShowTitleEnabled(false);
+                activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            }
+        } else {
+            if ( null != toolbarView ) {
+                Menu menu = toolbarView.getMenu();
+                if ( null != menu ) menu.clear();
+                toolbarView.inflateMenu(R.menu.menu_details);
+                finishCreatingMenu(toolbarView.getMenu());
+            }
         }
     }
 
@@ -228,5 +237,6 @@ public class DetailsFragment extends Fragment  implements LoaderManager.LoaderCa
             mUri = updatedUri;
             getLoaderManager().restartLoader(DETAIL_LOADER, null, this);
         }
+        getView().setVisibility(View.INVISIBLE);
     }
 }

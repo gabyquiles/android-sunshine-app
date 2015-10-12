@@ -54,21 +54,24 @@
     <string name="format_temperature"><xliff:g id="temp">%1.0f</xliff:g>\u00B0</string>
 
     <!-- Windspeed formats -->
+    <string name="wind_label">Wind</string>
     <!-- Wind in mph [CHAR LIMIT=25] -->
     <string name="format_wind_mph">
-        Wind: <xliff:g id="speed">%1$1.0f</xliff:g> mph <xliff:g id="direction">%2$s</xliff:g>
+        <xliff:g id="speed">%1$1.0f</xliff:g> mph <xliff:g id="direction">%2$s</xliff:g>
     </string>
 
         <!-- Wind in kph [CHAR LIMIT=25] -->
     <string name="format_wind_kmh">
-        Wind: <xliff:g id="speed">%1$1.0f</xliff:g> km/h <xliff:g id="direction">%2$s</xliff:g>
+        <xliff:g id="speed">%1$1.0f</xliff:g> km/h <xliff:g id="direction">%2$s</xliff:g>
     </string>
 
+    <string name="pressure_label">Pressure</string>
     <!-- Pressure format CHAR LIMIT=25] -->
-    <string name="format_pressure">Pressure: <xliff:g id="pressure">%1.0f</xliff:g> hPa</string>
+    <string name="format_pressure"><xliff:g id="pressure">%1.0f</xliff:g> hPa</string>
 
+    <string name="humidity_label">Humidity</string>
     <!-- Humidity format CHAR LIMIT=25]-->
-    <string name="format_humidity">Humidity: <xliff:g id="humidity">%1.0f</xliff:g> %%</string>
+    <string name="format_humidity"><xliff:g id="humidity">%1.0f</xliff:g> %%</string>
 
     <!-- Placeholder string -->
     <string name="placeholder" translatable="false">Lorem ipsum</string>

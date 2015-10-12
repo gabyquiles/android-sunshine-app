@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,6 +43,13 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
         super.onCreate(savedInstanceState);
         mLocation = Utility.getPreferredLocation(this);
         setContentView(R.layout.activity_main);
+
+        //Use custom toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+
         if (findViewById(R.id.weather_detail_container) != null) {
             // The detail container view will be present only in the large-screen layouts
             // (res/layout-sw600dp). If this view is present, then the activity should be
@@ -256,6 +264,8 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
                     // TODO: If there is an error, don't just keep trying to register.
                     // Require the user to click a button again, or perform
                     // exponential back-off.
+                } catch (Exception e) {
+                    int i = 0;
                 }
                 return null;
             }
