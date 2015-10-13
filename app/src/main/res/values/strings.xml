@@ -116,4 +116,10 @@
     <string name="pref_iconset_colored_url" translatable="false">https://raw.githubusercontent.com/udacity/sunshine_icons/master/Archive/Colored</string>
     <string name="pref_iconset_mono_url" translatable="false">https://raw.githubusercontent.com/udacity/sunshine_icons/master/Archive/Mono</string>
 
+    <!-- Value in SharedPreferences for Sunshine art pack option [CHAR LIMIT=NONE] -->
+    <string name="pref_iconset_pack_sunshine" translatable="false">https://raw.githubusercontent.com/udacity/Sunshine-Version-2/sunshine_master/app/src/main/res/drawable-xxhdpi/art_%s.png</string>
+
+    <!-- Value in SharedPreferences for cute dogs art pack  option [CHAR LIMIT=NONE] -->
+    <string name="pref_iconset_pack_cute_dogs" translatable="false">https://raw.githubusercontent.com/udacity/Sunshine-Version-2/sunshine_master/app/src/main/res/drawable-mdpi/art_%s.png</string>
+
 </resources>

@@ -33,6 +33,21 @@ public class Utility {
     // back into date objects for comparison/processing.
     public static final String DATE_FORMAT = "MMMM dd";
 
+
+    /**
+     * Helper method to return whether or not Sunshine is using local graphics.
+     *
+     * @param context Context to use for retrieving the preference
+     * @return true if Sunshine is using local graphics, false otherwise.
+     */
+    public static boolean usingLocalGraphics(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String sunshineArtPack = context.getString(R.string.pref_iconset_pack_sunshine);
+        return prefs.getString(context.getString(R.string.pref_iconset_key),
+                sunshineArtPack).equals(sunshineArtPack);
+    }
+
+
     public static String getPreferredLocation(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getString(context.getString(R.string.pref_location_key),
