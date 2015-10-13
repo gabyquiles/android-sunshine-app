@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.ImageView;
 import android.support.v7.widget.ShareActionProvider;
 import android.widget.TextView;
@@ -156,6 +158,11 @@ public class DetailsFragment extends Fragment  implements LoaderManager.LoaderCa
                     null,
                     null);
         }
+
+        ViewParent vp = getView().getParent();
+        if ( vp instanceof CardView ) {
+            ((View)vp).setVisibility(View.INVISIBLE);
+        }
         return null;
     }
 
@@ -163,7 +170,10 @@ public class DetailsFragment extends Fragment  implements LoaderManager.LoaderCa
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (!data.moveToFirst()) { return; }
 
-        getView().setVisibility(View.VISIBLE);
+        ViewParent vp = getView().getParent();
+        if(vp instanceof CardView) {
+            ((View) vp).setVisibility(View.VISIBLE);
+        }
 
         String dateString = Utility.getFormattedMonthDay(getActivity(), data.getLong(COL_WEATHER_DATE));
         mDateTextView.setText(dateString);
