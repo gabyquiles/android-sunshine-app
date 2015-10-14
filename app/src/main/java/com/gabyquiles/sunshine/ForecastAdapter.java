@@ -2,6 +2,7 @@ package com.gabyquiles.sunshine;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
     final private Context mContext;
     final private ForecastAdapterOnClickHandler mClickHandler;
     final private View mEmptyView;
+    final private ItemChoiceManager mICM;
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public final ImageView mIconView;
@@ -51,6 +53,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
             mCursor.moveToPosition(adapterPosition);
             int dateColumnIndex = mCursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_DATE);
             mClickHandler.onClick(mCursor.getLong(dateColumnIndex), this);
+            mICM.onClick(this);
         }
     }
 
@@ -58,10 +61,12 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
         void onClick(Long date, ViewHolder vh);
     }
 
-    public ForecastAdapter(Context context, View emtpyView, ForecastAdapterOnClickHandler clickHandler) {
+    public ForecastAdapter(Context context, View emtpyView, ForecastAdapterOnClickHandler clickHandler, int choiceMode) {
         mContext = context;
         mClickHandler = clickHandler;
         mEmptyView = emtpyView;
+        mICM = new ItemChoiceManager(this);
+        mICM.setChoiceMode(choiceMode);
     }
 
     @Override
@@ -123,10 +128,23 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
         String low_temp = Utility.formatTemperature(mContext, low);
         viewHolder.mLowTempView.setText(low_temp);
         viewHolder.mLowTempView.setContentDescription(mContext.getString(R.string.a11y_low_temp, low_temp));
+        mICM.onBindViewHolder(viewHolder, position);
+    }
+
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        mICM.onRestoreInstanceState(savedInstanceState);
+    }
+
+    public void onSaveInstanceState(Bundle outState) {
+        mICM.onSaveInstanceState(outState);
     }
 
     public void setUseTodayLayout(boolean useTodayLayout) {
         this.mUseTodayLayout = useTodayLayout;
+    }
+
+    public int getSelectedItemPosition() {
+        return mICM.getSelectedItemPosition();
     }
 
     @Override
@@ -165,6 +183,13 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
 
     public Cursor getCursor() {
         return mCursor;
+    }
+
+    public void selectView(RecyclerView.ViewHolder viewHolder) {
+        if ( viewHolder instanceof ViewHolder ) {
+            ViewHolder vfh = (ViewHolder)viewHolder;
+            vfh.onClick(vfh.itemView);
+        }
     }
 
 }

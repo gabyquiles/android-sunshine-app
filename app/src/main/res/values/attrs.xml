@@ -4,4 +4,8 @@
         <attr name="minLength" format="integer">
         </attr>
     </declare-styleable>
+    <declare-styleable name="ForecastFragment">
+        <attr name="android:choiceMode" />
+        <attr name="autoSelectView" format="boolean"/>
+    </declare-styleable>
 </resources>
