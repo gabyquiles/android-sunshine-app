@@ -1,9 +1,11 @@
 package com.gabyquiles.sunshine;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -137,7 +139,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         if (savedInstanceState != null) {
             mPosition = savedInstanceState.getInt("position", 0);
         }
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         mEmptyView = (TextView) rootView.findViewById(R.id.empty);
 
         mAdapter = new ForecastAdapter(getActivity(), mEmptyView, new ForecastAdapter.ForecastAdapterOnClickHandler() {
@@ -157,6 +159,30 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview_forecast);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mAdapter);
+
+        //Parallax Scrolling
+        final View parallaxBar = rootView.findViewById(R.id.parallax_bar);
+        if (null != parallaxBar) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+                    @Override
+                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                        super.onScrolled(recyclerView, dx, dy);
+
+                        int max = parallaxBar.getHeight();
+                        if(dy > 0) {
+                            parallaxBar.setTranslationY(
+                                    Math.max(-max, parallaxBar.getTranslationY() - dy / 2));
+                        } else {
+                            parallaxBar.setTranslationY(
+                                    Math.min(0, parallaxBar.getTranslationY() - dy / 2));
+                        }
+
+                        }
+                });
+            }
+        }
 
         // If there's instance state, mine it for useful information.
         // The end-goal here is that the user never knows that turning their device sideways
@@ -192,6 +218,14 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         }
         mAdapter.onSaveInstanceState(outState);
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(mRecyclerView != null) {
+            mRecyclerView.clearOnScrollListeners();
+        }
     }
 
     /*
