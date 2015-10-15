@@ -124,4 +124,7 @@
 
     <string name="detail_icon_transition_name" translatable="false">detail_icon</string>
 
+    <!-- Strings related to Widgets -->
+    <string name="title_widget_today">Sunshine Today</string>
+
 </resources>
