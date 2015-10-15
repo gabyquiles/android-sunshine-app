@@ -10,11 +10,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.gabyquiles.sunshine.sync.SunshineSyncAdapter;
 import com.google.android.gms.common.ConnectionResult;
@@ -97,7 +99,6 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
         updateLocation();
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -139,7 +140,7 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
     }
 
     @Override
-    public void onItemSelected(Uri dateUri) {
+    public void onItemSelected(Uri dateUri, ForecastAdapter.ViewHolder viewHolder) {
         if (mTwoPane) {
             // In two-pane mode, show the detail view in this activity by
             // adding or replacing the detail fragment using a
@@ -156,7 +157,10 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
         } else {
             Intent intent = new Intent(this, DetailsActivity.class)
                     .setData(dateUri);
-            ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(this);
+            ActivityOptionsCompat activityOptions = ActivityOptionsCompat.
+                    makeSceneTransitionAnimation(this,
+                            new Pair<View, String>(viewHolder.mIconView,
+                                    getString(R.string.detail_icon_transition_name)));
             ActivityCompat.startActivity(this, intent, activityOptions.toBundle());
         }
     }

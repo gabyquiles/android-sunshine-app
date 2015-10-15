@@ -3,10 +3,11 @@ package com.gabyquiles.sunshine;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class DetailsActivity extends ActionBarActivity {
+public class DetailsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,6 +19,7 @@ public class DetailsActivity extends ActionBarActivity {
 
             Bundle arguments = new Bundle();
             arguments.putParcelable(DetailsFragment.DETAIL_URI, getIntent().getData());
+            arguments.putBoolean(DetailsFragment.DETAIL_TRANSITION_ANIMATION, true);
 
             DetailsFragment fragment = new DetailsFragment();
             fragment.setArguments(arguments);
@@ -25,6 +27,8 @@ public class DetailsActivity extends ActionBarActivity {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.weather_detail_container, fragment)
                     .commit();
+
+            supportPostponeEnterTransition();
         }
     }
 

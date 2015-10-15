@@ -122,4 +122,6 @@
     <!-- Value in SharedPreferences for cute dogs art pack  option [CHAR LIMIT=NONE] -->
     <string name="pref_iconset_pack_cute_dogs" translatable="false">https://raw.githubusercontent.com/udacity/Sunshine-Version-2/sunshine_master/app/src/main/res/drawable-mdpi/art_%s.png</string>
 
+    <string name="detail_icon_transition_name" translatable="false">detail_icon</string>
+
 </resources>

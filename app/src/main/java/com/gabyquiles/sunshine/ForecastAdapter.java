@@ -3,6 +3,7 @@ package com.gabyquiles.sunshine;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -109,6 +110,9 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
                     .crossFade()
                     .into(viewHolder.mIconView);
         }
+
+        //This is for transition motion
+        ViewCompat.setTransitionName(viewHolder.mIconView, "iconView" + position);
 
         String forecast_conditions = mCursor.getString(ForecastFragment.COL_WEATHER_DESC);
         viewHolder.mDescriptionView.setText(forecast_conditions);
