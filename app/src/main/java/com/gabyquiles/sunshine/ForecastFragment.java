@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -14,6 +15,7 @@ import android.support.v4.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -182,6 +184,24 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                         }
 
                         }
+                });
+            }
+        }
+
+        final AppBarLayout appBarView = (AppBarLayout) rootView.findViewById(R.id.appbar);
+        if (null != appBarView) {
+            ViewCompat.setElevation(appBarView, 0);
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+                    @Override
+                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                        if( 0 == recyclerView.computeVerticalScrollOffset()) {
+                            appBarView.setElevation(0);
+                        } else {
+                            appBarView.setElevation(appBarView.getTargetElevation());
+                        }
+                    }
                 });
             }
         }
