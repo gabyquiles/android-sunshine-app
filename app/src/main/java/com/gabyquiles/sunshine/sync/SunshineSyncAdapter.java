@@ -29,6 +29,7 @@ import android.text.format.Time;
 import android.util.Log;
 
 import com.bumptech.glide.Glide;
+import com.gabyquiles.sunshine.BuildConfig;
 import com.gabyquiles.sunshine.MainActivity;
 import com.gabyquiles.sunshine.R;
 import com.gabyquiles.sunshine.Utility;
@@ -110,6 +111,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
             // http://openweathermap.org/API#forecast
             final String FORECAST_BASE_URL =
                     "http://api.openweathermap.org/data/2.5/forecast/daily?";
+            final String APP_ID_PARAM = "APPID";
             final String QUERY_PARAM = "zip";
             final String FORMAT_PARAM = "mode";
             final String UNITS_PARAM = "units";
@@ -120,6 +122,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
                     .appendQueryParameter(FORMAT_PARAM, format)
                     .appendQueryParameter(UNITS_PARAM, units)
                     .appendQueryParameter(DAYS_PARAM, Integer.toString(numDays))
+                    .appendQueryParameter(APP_ID_PARAM, BuildConfig.OPENWEATHER_API_ID)
                     .build();
 
             URL url = new URL(builtUri.toString());
