@@ -92,12 +92,16 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
         int weatherId = mCursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID);
 
         int defaultImage;
+        boolean useLongToday;
+
         switch (getItemViewType(mCursor.getPosition())) {
             case VIEW_TYPE_TODAY:
                 defaultImage = Utility.getArtResourceForWeatherCondition(weatherId);
+                useLongToday = true;
                 break;
             default:
                 defaultImage = Utility.getIconResourceForWeatherCondition(weatherId);
+                useLongToday = false;
         }
 
         if (Utility.usingLocalGraphics(mContext)) {
@@ -118,7 +122,9 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
         viewHolder.mDescriptionView.setText(forecast_conditions);
         viewHolder.mDescriptionView.setContentDescription(mContext.getString(R.string.a11y_forecast, forecast_conditions));
 
-        String dateStr = Utility.getDayName(mContext, mCursor.getLong(ForecastFragment.COL_WEATHER_DATE));
+        long dateInMillis = mCursor.getLong(ForecastFragment.COL_WEATHER_DATE);
+
+        String dateStr = Utility.getFriendlyDayString(mContext, dateInMillis, useLongToday);
         viewHolder.mDateView.setText(dateStr);
 
         // Read high temperature from cursor
