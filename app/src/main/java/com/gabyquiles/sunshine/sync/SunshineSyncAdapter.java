@@ -34,6 +34,7 @@ import com.gabyquiles.sunshine.MainActivity;
 import com.gabyquiles.sunshine.R;
 import com.gabyquiles.sunshine.Utility;
 import com.gabyquiles.sunshine.data.WeatherContract;
+import com.gabyquiles.sunshine.muzei.WeatherMuzeiSource;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -432,6 +433,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
                 if(Utility.getPreferredNotification(getContext())) {
                     updateWidgets();
                     notifyWeather();
+                    updateLiveWallpaper();
                 }
                 setLocationStatus(getContext(), LOCATION_STATUS_OK);
             }
@@ -439,6 +441,16 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
             Log.e(LOG_TAG, e.getMessage(), e);
             e.printStackTrace();
             setLocationStatus(getContext(), LOCATION_STATUS_SERVER_INVALID);
+        }
+    }
+
+    private void updateLiveWallpaper() {
+        // Muzei is only compatible with Jelly Bean MR1+ devices, so there's no need to update the
+        // Muzei background on lower API level devices
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            Context context = getContext();
+            context.startService(new Intent(ACTION_DATA_UPDATED)
+                    .setClass(context, WeatherMuzeiSource.class));
         }
     }
 
